@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import LandingScreen from './screens/LandingScreen'
+import MainScreen from './screens/MainScreen';
 
 export default function App() {
+  const [searchTxt, setSearchTxt]= useState('')
   return (
     <View style={styles.container}>
-      <LandingScreen/>
+      {/* <LandingScreen/> */}
+      <MainScreen/>
     </View>
   );
 }

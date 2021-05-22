@@ -16,7 +16,7 @@ export default function LandingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ede9da',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   welcomeText:{
       position: 'absolute',
       top: 20,
+      textAlign: 'center',
       fontSize: 24,
       fontWeight: 'bold'
   },
