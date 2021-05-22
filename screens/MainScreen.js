@@ -2,16 +2,24 @@ import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import SearchBar from '../components/SearchBar'
 
-export default function MainScreen() {
 
-    const [searchTxt, setSearchTxt] =useState('')
+export default function MainScreen({sock}) {
+    
+    const [searchTxt, setSearchTxt] =useState()
 
-    useEffect(() => {
-        console.log(searchTxt)
-      }, [searchTxt]);
+    sock.on('searchText', text=>{
+        setSearchTxt(text)
+        console.log(text)
+    })
+    
+    function typing(text){
+        setSearchTxt(text)
+        sock.emit('message', 'search '+text)
+    }
     return (
         <View style={styles.container}>
-            <SearchBar style={styles.searchbahr} txt={searchTxt} setTxt={setSearchTxt}/>
+            <SearchBar style={styles.searchbahr} txt={searchTxt} setTxt={typing}/>
+            <Text>{searchTxt}</Text>        
         </View>
     )
 
