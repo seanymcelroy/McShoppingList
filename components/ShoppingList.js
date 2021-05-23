@@ -1,15 +1,15 @@
 import React from 'react'
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 
-export default function ShoppingList({displayedItems}) {
+export default function ShoppingList({displayedItems, checkItem}) {
 
     return (
         <View style={styles.container}>
             <FlatList data={displayedItems}
             renderItem={({item})=>(
-                <TouchableOpacity>
+                <TouchableOpacity onLongPress={()=>checkItem(item)}>
                     <View style={styles.txtContainer}>
-                       <Text style={styles.text}>{item.name}</Text>
+                       <Text style={item.check===false?styles.text: styles.textChecked}>{item.name}</Text>
                    </View>
                 </TouchableOpacity>
             )}
@@ -32,6 +32,14 @@ const styles = StyleSheet.create({
         fontSize: 32,
         padding: 20,
         color: 'black',
+        textTransform: 'capitalize'
+    },
+    textChecked:{
+        textDecorationLine: 'line-through', 
+        textDecorationStyle: 'solid',
+        color: 'green',
+        fontSize: 32,
+        padding: 20,
         textTransform: 'capitalize'
     },
     boundary:{

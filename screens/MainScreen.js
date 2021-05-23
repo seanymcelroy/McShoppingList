@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, BackHandler } from 'react-native'
 import SearchBar from '../components/SearchBar'
 import ShoppingList from '../components/ShoppingList'
 
@@ -19,6 +19,20 @@ export default function MainScreen({sock}) {
         setSearchTxt(text)
         console.log(text)
     })
+
+    sock.on('changeStatus', text=>{
+        console.log(text)
+        const nuItems=[...items]
+        for(let nuItem of nuItems){
+            if (text.name.toLowerCase().trim()===nuItem.name.toLowerCase().trim()){
+                nuItem.check=text.check
+                console.log("HEY", text.check)
+                setItems(nuItems)
+                return
+            }
+        }
+    })
+    
 
     sock.on('nuItem', nuItem=>{
         console.log(nuItem)
@@ -48,7 +62,7 @@ export default function MainScreen({sock}) {
                 </View>
             </TouchableOpacity>
             <View style={styles.listContainer}>
-                <ShoppingList displayedItems={items}/>
+                <ShoppingList displayedItems={items} checkItem={handleCheck}/>
             </View>
         </View>
     )
@@ -59,6 +73,11 @@ export default function MainScreen({sock}) {
         if(item.name!= ""){
             sock.emit('message', 'add '+JSON.stringify(item))
         }
+    }
+
+    function handleCheck(item){
+        console.log(item)
+        sock.emit('message', 'check '+JSON.stringify(item))
     }
 
     
