@@ -8,16 +8,19 @@ export default function MainScreen({sock}) {
     
     const [searchTxt, setSearchTxt] =useState()
     const [items, setItems]= useState([])
+    const [showingItems, setShowingItems]= useState(items)
 
     sock.on('items', (itms)=>{
         setItems(itms)
         // Items
-        console.log(items)
+        setShowingItems(items)
     })
 
     sock.on('searchText', text=>{
+        console.log("text")
         setSearchTxt(text)
-        console.log(text)
+        
+        
     })
 
     sock.on('changeStatus', text=>{
@@ -47,6 +50,11 @@ export default function MainScreen({sock}) {
 
     useEffect(() => {
         // Filter data to show selected items
+        if (searchTxt===""){
+            setShowingItems(items)
+        }else{
+            filterItems(searchTxt)
+        }
       }, [searchTxt]);
     
     function typing(text){
@@ -62,7 +70,7 @@ export default function MainScreen({sock}) {
                 </View>
             </TouchableOpacity>
             <View style={styles.listContainer}>
-                <ShoppingList displayedItems={items} checkItem={handleCheck}/>
+                <ShoppingList displayedItems={showingItems} checkItem={handleCheck}/>
             </View>
         </View>
     )
@@ -78,6 +86,12 @@ export default function MainScreen({sock}) {
     function handleCheck(item){
         console.log(item)
         sock.emit('message', 'check '+JSON.stringify(item))
+    }
+
+    function filterItems(str){
+        allItems=[...items]
+        filteredItems= allItems.filter(item=>item.name.toLowerCase().startsWith(str.toLowerCase()))
+        setShowingItems(filteredItems)
     }
 
     
