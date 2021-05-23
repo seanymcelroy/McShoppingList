@@ -19,11 +19,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ede9da',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10
+    padding: 15,
+    width: '100%'
   },
   welcomeText:{
       position: 'absolute',
-      top: 20,
+      top: 40,
       textAlign: 'center',
       fontSize: 24,
       fontWeight: 'bold'

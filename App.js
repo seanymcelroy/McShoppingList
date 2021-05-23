@@ -7,10 +7,21 @@ import { io } from "socket.io-client";
 
 export default function App() {
   const socket = io("ws://192.168.0.14:3000");
+  const [connected, setConnection]=useState(false)
+
+  socket.on("connect", () => {
+    setConnection(true)
+  });
+
+  socket.on("disconnect", () => {
+    setConnection(false)
+    socket.connect();
+  });
+
   return (
     <View style={styles.container}>
-      {/* <LandingScreen/> */}
-      <MainScreen sock={socket}/>
+      {!connected && <LandingScreen/>}
+      {connected && <MainScreen sock={socket}/>}
     </View>
   );
 }
