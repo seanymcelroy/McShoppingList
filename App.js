@@ -1,16 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React, {useState, us} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import LandingScreen from './screens/LandingScreen'
 import MainScreen from './screens/MainScreen';
 import { io } from "socket.io-client";
 
 export default function App() {
-  const socket = io("ws://192.168.0.14:3000");
+  // const socket = null;
+  const socket=io("ws://192.168.0.14:3000")
+
+  // useEffect(() => {
+  // }, [])
   const [connected, setConnection]=useState(false)
 
   socket.on("connect", () => {
     setConnection(true)
+    
   });
 
   socket.on("disconnect", () => {

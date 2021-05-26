@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 
-export default function ShoppingList({displayedItems, checkItem}) {
+export default function ShoppingList({displayedItems, checkItem, fresh}) {
 
+    const [freshing, setRefreshing] =useState(false)
     return (
         <View style={styles.container}>
             <FlatList data={displayedItems}
@@ -14,7 +15,10 @@ export default function ShoppingList({displayedItems, checkItem}) {
                 </TouchableOpacity>
             )}
             keyExtractor={item => item.name}
-            ItemSeparatorComponent={()=><View style={styles.boundary}></View>}/>
+            refreshing={freshing}
+            onRefresh={fresh}
+            ItemSeparatorComponent={()=><View style={styles.boundary}
+            ></View>}/>
         </View>
     )
 }

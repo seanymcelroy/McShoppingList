@@ -10,10 +10,21 @@ export default function MainScreen({sock}) {
     const [items, setItems]= useState([])
     const [showingItems, setShowingItems]= useState(items)
 
+    useEffect(() => {
+        // Filter data to show selected items
+        sock.emit('message', 'refresh '+'blah')
+      }, []);
+
+    sock.on('refresh', eyetems=>{
+        setItems(alphabetize(eyetems))
+        setShowingItems(alphabetize(eyetems)) 
+    })
+
     sock.on('items', (itms)=>{
         setItems(itms)
         // Items
-        setShowingItems(items)
+        console.log(items)
+        setShowingItems(alphabetize(itms))
     })
 
     sock.on('searchText', text=>{
@@ -24,35 +35,43 @@ export default function MainScreen({sock}) {
     })
 
     sock.on('changeStatus', text=>{
-        console.log(text)
-        const nuItems=[...items]
-        for(let nuItem of nuItems){
-            if (text.name.toLowerCase().trim()===nuItem.name.toLowerCase().trim()){
-                nuItem.check=text.check
-                console.log("HEY", text.check)
-                setItems(nuItems)
-                return
+        item=JSON.parse(text)
+        // console.log(item)
+        let all_items=[...items]
+        let showedItems=[...showingItems]
+        for(let tem of showedItems){
+            if (tem.name.toLowerCase()==item.name.toLowerCase()){
+                tem.check=item.check
             }
         }
+        setShowingItems(showedItems)
+
+        for(let tem of all_items){
+            if (tem.name.toLowerCase()==item.name.toLowerCase()){
+                tem.check=item.check
+            }
+        }
+        setItems(all_items)
     })
     
 
-    sock.on('nuItem', nuItem=>{
-        console.log(nuItem)
-        for (let item of items) {
-            if (nuItem.name.toLowerCase().trim() === item.name.toLowerCase().trim()){
-                return
-            }
-        }
-        setItems([nuItem, ...items])
+    sock.on('nuItem', nuItemName=>{
+
+        const items=[{'name': nuItemName, 'check': false},...showingItems]
+        setShowingItems(items)
+
+        const eyetems=[{'name': nuItemName, 'check': false},...items]
+        setItems(eyetems)
+        
     })
 
 
     useEffect(() => {
         // Filter data to show selected items
-        if (searchTxt===""){
+        if (searchTxt==="" || searchTxt==undefined){
             setShowingItems(items)
         }else{
+            console.log(searchTxt)
             filterItems(searchTxt)
         }
       }, [searchTxt]);
@@ -70,28 +89,56 @@ export default function MainScreen({sock}) {
                 </View>
             </TouchableOpacity>
             <View style={styles.listContainer}>
-                <ShoppingList displayedItems={showingItems} checkItem={handleCheck}/>
+                <ShoppingList displayedItems={showingItems} checkItem={handleCheck} fresh={refresh}/>
             </View>
         </View>
     )
 
     function addItem(){
-        const item={name: searchTxt, check: false}
         typing("")
-        if(item.name!= ""){
-            sock.emit('message', 'add '+JSON.stringify(item))
+        if(searchTxt!= ""){
+            sock.emit('message', 'add '+searchTxt)
         }
+        const all_items=[{'name': searchTxt, 'check': false}, ...items]
+        setItems(all_items)
     }
 
     function handleCheck(item){
-        console.log(item)
+        // console.log(item)
+        let all_items=[...items]
+        let showed_items=[...showingItems]
+        let verdict=null
+        for(let tem of all_items){
+            if (tem.name.toLowerCase()==item.name.toLowerCase()){
+                tem.check=!(tem.check)
+                verdict=tem.check
+            }
+        }
+        setItems(all_items)
+        // setShowingItems(showed_items)
         sock.emit('message', 'check '+JSON.stringify(item))
     }
 
     function filterItems(str){
-        allItems=[...items]
-        filteredItems= allItems.filter(item=>item.name.toLowerCase().startsWith(str.toLowerCase()))
+        if(str.length>0){
+            str=str.toLowerCase()
+        }
+        const allItems=[...items]
+        const filteredItems= allItems.filter(item=>item.name.toLowerCase().startsWith(str.toLowerCase()))
         setShowingItems(filteredItems)
+    }
+
+    function refresh(){
+        // sock.emit('message', 'refresh '+'blah')
+        sock.emit('message', 'refresh '+'tah')
+    }
+    function alphabetize(arr){
+        if(arr!=null){
+            console.log(arr.sort((a, b)=>a.name<b.name?-1:1))
+            return arr.sort((a, b)=>a.name<b.name?-1:1)
+        }
+        return arr
+
     }
 
     
@@ -128,6 +175,8 @@ const styles = StyleSheet.create({
     listContainer:{
         height: 450,
         width: '100%',
-        padding: 0
+        padding: 0,
+        borderWidth: 1,
+        borderColor: "thistle"
     }
 });
