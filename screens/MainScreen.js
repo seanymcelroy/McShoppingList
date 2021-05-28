@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, BackHandler } from 'react-native'
 import SearchBar from '../components/SearchBar'
 import ShoppingList from '../components/ShoppingList'
@@ -10,60 +10,72 @@ export default function MainScreen({sock}) {
     const [items, setItems]= useState([])
     const [showingItems, setShowingItems]= useState(items)
 
+
+
+    const updateItems= useCallback((neuItem)=>{
+        setItems(oldItems=> [neuItem,...oldItems])
+        setShowingItems(oldItems=> [neuItem,...oldItems])
+    }, [setItems, setShowingItems]);
+
+    
+    const checkItem= useCallback((item)=>{
+        setItems(oldItems=> {
+            const updatedItems=[...oldItems]
+            for(let it of updatedItems){
+                if (it.name.toLowerCase()==item.name){
+                    it.check=item.check
+                }
+            }
+            return updatedItems
+        })
+
+        // setShowingItems(oldItems=> [neuItem,...oldItems]
+    }, [setItems, setShowingItems]);
+
     useEffect(() => {
         // Filter data to show selected items
         sock.emit('message', 'refresh '+'blah')
-      }, []);
-
-    sock.on('refresh', eyetems=>{
-        setItems(alphabetize(eyetems))
-        setShowingItems(alphabetize(eyetems)) 
-    })
-
-    sock.on('items', (itms)=>{
-        setItems(itms)
-        // Items
-        console.log(items)
-        setShowingItems(alphabetize(itms))
-    })
-
-    sock.on('searchText', text=>{
-        console.log("text")
-        setSearchTxt(text)
+        sock.on('searchText', text=>{
+            console.log(text)
+            setSearchTxt(text)        
+        })
         
+        sock.on('items', (itms)=>{
+            setItems(itms)
+            // Items
+            // console.log(items)
+            setShowingItems(alphabetize(itms))
+        })
+        sock.on('nuItem', nuItemName=>{
+    
+            console.log('yo ' + nuItemName)
+            const itemz=[{'name': nuItemName, 'check': false},...items]
+            
+            // setItems(itemz)
+            // setShowingItems(itemz)
+            updateItems({'name': nuItemName, 'check': false})
+    
+            // const eyetems=[{'name': nuItemName, 'check': false},...items]
+            // setItems(eyetems)
+            
+        })
+
+        sock.on('changeStatus', text=>{
+            item=JSON.parse(text)
+            // console.log(item)
+            checkItem(item)
+            
+        })
+
+        sock.on('refresh', eyetems=>{
+            setItems(alphabetize(eyetems))
+            setShowingItems(alphabetize(eyetems)) 
+        })
         
-    })
-
-    sock.on('changeStatus', text=>{
-        item=JSON.parse(text)
-        // console.log(item)
-        let all_items=[...items]
-        let showedItems=[...showingItems]
-        for(let tem of showedItems){
-            if (tem.name.toLowerCase()==item.name.toLowerCase()){
-                tem.check=item.check
-            }
-        }
-        setShowingItems(showedItems)
-
-        for(let tem of all_items){
-            if (tem.name.toLowerCase()==item.name.toLowerCase()){
-                tem.check=item.check
-            }
-        }
-        setItems(all_items)
-    })
+    }, [updateItems, checkItem]);
     
 
-    sock.on('nuItem', nuItemName=>{
-
-        const items=[{'name': nuItemName, 'check': false},...showingItems]
-        setShowingItems(items)
-
-        const eyetems=[{'name': nuItemName, 'check': false},...items]
-        setItems(eyetems)
-        
-    })
+    
 
 
     useEffect(() => {
@@ -71,7 +83,7 @@ export default function MainScreen({sock}) {
         if (searchTxt==="" || searchTxt==undefined){
             setShowingItems(items)
         }else{
-            console.log(searchTxt)
+            // console.log(searchTxt)
             filterItems(searchTxt)
         }
       }, [searchTxt]);
@@ -134,8 +146,8 @@ export default function MainScreen({sock}) {
     }
     function alphabetize(arr){
         if(arr!=null){
-            console.log(arr.sort((a, b)=>a.name<b.name?-1:1))
-            return arr.sort((a, b)=>a.name<b.name?-1:1)
+            // console.log(arr.sort((a, b)=>a.name<b.name?-1:1))
+            return arr.sort((a, b)=>a.name.toLowerCase()<b.name.toLowerCase()?-1:1)
         }
         return arr
 
