@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useCallback} from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Modal } from 'react-native'
 import SearchBar from '../components/SearchBar'
 import ShoppingList from '../components/ShoppingList'
-import {FontAwesome5} from '@expo/vector-icons'
+import {FontAwesome5, MaterialIcons} from '@expo/vector-icons'
 
 export default function MainScreen({sock}) {
     
@@ -104,11 +104,26 @@ export default function MainScreen({sock}) {
             <View style={styles.listContainer}>
                 <ShoppingList displayedItems={showingItems} checkItem={handleCheck} fresh={refresh}/>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>setDeleteVisible(true)}>
                 <FontAwesome5 style={styles.bin} name={'trash'} size={44} color="red"/>
             </TouchableOpacity>
-            <Modal transparent visible={true} >
-                <View style={styles.deleteModal}></View>
+            <Modal transparent visible={deleteVisible}  >
+                <TouchableOpacity style={styles.deleteModal} onPress={()=>setDeleteVisible(false)}>
+                        <TouchableWithoutFeedback>
+                            <View style={styles.modal_box}>
+                                <MaterialIcons name={'clear'} size={44} style={styles.xbaby} onPress={()=>setDeleteVisible(false)}/>
+                                <TouchableOpacity onPress={()=>{
+                                    del()
+                                    setDeleteVisible(false)
+                                }}>
+                                    <View style={styles.big_red_btn} >
+                                        <Text style={styles.red_btn_text}>Delete List</Text>
+                                    </View>
+
+                                </TouchableOpacity>
+                            </View>
+                        </TouchableWithoutFeedback>
+                </TouchableOpacity>
             </Modal>
         </View>
     )
@@ -151,6 +166,7 @@ export default function MainScreen({sock}) {
         // sock.emit('message', 'refresh '+'blah')
         sock.emit('message', 'refresh '+'tah')
     }
+    
     function alphabetize(arr){
         if(arr!=null){
             // console.log(arr.sort((a, b)=>a.name<b.name?-1:1))
@@ -159,6 +175,13 @@ export default function MainScreen({sock}) {
         return arr
 
     }
+
+    function del(){
+        sock.emit('delete', 'del')
+        setItems([])
+        setShowingItems([])
+    }
+
 
     
 }
@@ -184,7 +207,8 @@ const styles = StyleSheet.create({
         width: '30%',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 30
+        borderRadius: 30,
+        elevation:20
     },
     btnText:{
         color: 'white',
@@ -199,12 +223,41 @@ const styles = StyleSheet.create({
         borderColor: "thistle"
     },
     bin:{
-        marginTop: 10
+        marginTop: 10,
+        elevation: 10
     },
     deleteModal:{
         flex:1,
         backgroundColor: 'rgba(0,0,0,0.5)',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    modal_box:{
+        width: '80%',
+        backgroundColor: 'white',
+        padding: 20,
+        height: '40%',
+        borderRadius: 30,
+        elevation: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    big_red_btn:{
+        backgroundColor: 'red',
+        width: 200,
+        height: 200,
+        borderRadius: 1000,
+        justifyContent: 'center',
+        elevation: 40,
+        alignItems: 'center'
+    },
+    red_btn_text:{
+        color: 'white',
+        fontSize: 36
+    },
+    xbaby:{
+        position: 'absolute',
+        right:5,
+        top:5
     }
 });
