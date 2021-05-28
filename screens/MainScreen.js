@@ -1,14 +1,15 @@
 import React, {useState, useEffect, useCallback} from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, BackHandler } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import SearchBar from '../components/SearchBar'
 import ShoppingList from '../components/ShoppingList'
-
+import {FontAwesome5} from '@expo/vector-icons'
 
 export default function MainScreen({sock}) {
     
     const [searchTxt, setSearchTxt] =useState()
     const [items, setItems]= useState([])
     const [showingItems, setShowingItems]= useState(items)
+    const [deleteVisible, setDeleteVisible]=useState(false)
 
 
 
@@ -103,6 +104,12 @@ export default function MainScreen({sock}) {
             <View style={styles.listContainer}>
                 <ShoppingList displayedItems={showingItems} checkItem={handleCheck} fresh={refresh}/>
             </View>
+            <TouchableOpacity>
+                <FontAwesome5 style={styles.bin} name={'trash'} size={44} color="red"/>
+            </TouchableOpacity>
+            <Modal transparent visible={true} >
+                <View style={styles.deleteModal}></View>
+            </Modal>
         </View>
     )
 
@@ -190,5 +197,14 @@ const styles = StyleSheet.create({
         padding: 0,
         borderWidth: 1,
         borderColor: "thistle"
+    },
+    bin:{
+        marginTop: 10
+    },
+    deleteModal:{
+        flex:1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

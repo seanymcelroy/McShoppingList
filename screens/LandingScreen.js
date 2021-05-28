@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, Image, View } from 'react-native';
-
 export default function LandingScreen() {
   return (
     <View style={styles.container}>
@@ -8,7 +7,8 @@ export default function LandingScreen() {
       <Image
         style={styles.basketIMG}
         source={require('../assets/shoppingBasket.png')}
-      />
+        />
+      <Text style={styles.refreshText}>If you're on this page long enough to read this... refresh the app</Text>
     </View>
   );
 }
@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontSize: 24,
       fontWeight: 'bold'
+  },
+  refreshText:{
+  position: 'absolute',
+  bottom: 40,
+  textAlign: 'center'
   },
   basketIMG:{
     width: 200,

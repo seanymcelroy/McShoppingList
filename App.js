@@ -10,18 +10,20 @@ export default function App() {
   // const socket = null;
 
   useEffect(() => {
+    socket.on("connect", () => {
+      setConnection(true)
+    });
+  
+    socket.on("disconnect", () => {
+      setConnection(false)
+      socket.connect();
+    });
+    
     return ()=>socket.close()
   }, [])
   const [connected, setConnection]=useState(false)
 
-  socket.on("connect", () => {
-    setConnection(true)
-  });
 
-  socket.on("disconnect", () => {
-    setConnection(false)
-    socket.connect();
-  });
 
   return (
     <View style={styles.container}>
