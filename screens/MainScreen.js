@@ -72,6 +72,10 @@ export default function MainScreen({sock}) {
             setItems(alphabetize(eyetems))
             setShowingItems(alphabetize(eyetems)) 
         })
+        sock.on('delete', ()=>{
+            setItems([])
+            setShowingItems([]) 
+        })
         
     }, [updateItems, checkItem]);
     
@@ -117,7 +121,7 @@ export default function MainScreen({sock}) {
                                     setDeleteVisible(false)
                                 }}>
                                     <View style={styles.big_red_btn} >
-                                        <Text style={styles.red_btn_text}>Delete List</Text>
+                                        <Text style={styles.red_btn_text}>Empty</Text>
                                     </View>
 
                                 </TouchableOpacity>
@@ -177,7 +181,7 @@ export default function MainScreen({sock}) {
     }
 
     function del(){
-        sock.emit('delete', 'del')
+        sock.emit('message', 'delete ')
         setItems([])
         setShowingItems([])
     }
