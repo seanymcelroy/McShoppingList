@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     },
     btn:{
         margin: 20,
-        backgroundColor: 'green',
+        backgroundColor: '#5bdb4d',
         height: 60,
         width: '30%',
         alignItems: 'center',
