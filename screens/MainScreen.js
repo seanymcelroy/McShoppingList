@@ -106,7 +106,7 @@ export default function MainScreen({sock}) {
                 </View>
             </TouchableOpacity>
             <View style={styles.listContainer}>
-                <ShoppingList displayedItems={showingItems} checkItem={handleCheck} fresh={refresh}/>
+                <ShoppingList allItems={items} displayedItems={showingItems} checkItem={handleCheck} fresh={refresh}/>
             </View>
             <TouchableOpacity onPress={()=>setDeleteVisible(true)}>
                 <FontAwesome5 style={styles.bin} name={'trash'} size={44} color="red"/>

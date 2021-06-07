@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, Image, View } from 'react-native';
-export default function LandingScreen() {
+export default function LandingScreen(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>McElroy Family Shopping List</Text>
@@ -8,7 +8,7 @@ export default function LandingScreen() {
         style={styles.basketIMG}
         source={require('../assets/shoppingBasket.png')}
         />
-      <Text style={styles.refreshText}>If you're on this page long enough to read this... refresh the app</Text>
+      <Text style={styles.refreshText}>Make sure you're connected to the internet. Try closing the app then open it</Text>
     </View>
   );
 }

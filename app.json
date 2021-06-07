@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "A shopping list app for my family",
+    "githubUrl": "https://github.com/seanymcelroy/McShoppingList"
   }
 }

@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import {FontAwesome5} from '@expo/vector-icons'
 
-export default function ShoppingList({displayedItems, checkItem, fresh}) {
+export default function ShoppingList({allItems, displayedItems, checkItem, fresh}) {
 
     const [freshing, setRefreshing] =useState(false)
     return (
         <View style={styles.container}>
-            <FlatList data={displayedItems}
+            {allItems.length>0 &&<FlatList data={displayedItems}
             renderItem={({item})=>(
                 <TouchableOpacity onLongPress={()=>checkItem(item)}>
                     <View style={styles.txtContainer}>
@@ -18,7 +19,9 @@ export default function ShoppingList({displayedItems, checkItem, fresh}) {
             refreshing={freshing}
             onRefresh={fresh}
             ItemSeparatorComponent={()=><View style={styles.boundary}
-            ></View>}/>
+            ></View>}/>}
+            {allItems.length==0 && <View style={styles.mttxtContainer}><Text style={styles.emptyBasketTxt}>No items in Basket</Text>
+            <FontAwesome5 name="shopping-basket" size={90} color="black" /></View>}
         </View>
     )
 }
@@ -50,5 +53,16 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 2,
         backgroundColor: '#d3d4cf'
+    },
+    mttxtContainer:{
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%'
+    },
+    emptyBasketTxt:{
+        fontSize: 32,
+        padding: 20
     }
+
 });
