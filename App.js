@@ -16,12 +16,26 @@ export default function App() {
   // const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [connection, setConnection]= useState(false)
   const [roomKey, setRoomKey]=useState('')
-  useInterval(()=>{
-    if (!socket.connected){
-      socket.reconnect();
-      setCount(count=>count+1)
-    }
-  }, 1000)
+
+    useInterval(()=>{
+      
+      if (!socket.connected){
+        // socket.connect()
+        // socket.socket.connect()
+        // setCount(count=>count+1)
+        tryReconnect()
+      }
+    }, 1000)
+
+  const tryReconnect = () => {
+      setTimeout(() => {
+        socket.io.open((err) => {
+          if (err) {
+            tryReconnect();
+          }
+        });
+      }, 2000);
+  }
 
   useEffect(() => {
     // AppState.addEventListener("change", _handleAppStateChange);
@@ -34,7 +48,8 @@ export default function App() {
   
     socket.on("disconnect", () => {
       setConnection(false)
-      socket.reconnect();
+      tryReconnect()
+      // socket.socket.connect()
     });
     
     return ()=>{
@@ -59,6 +74,7 @@ export default function App() {
 
     const setKey = async (value) => {
       try {
+        console.log("Key is ", value)
         await AsyncStorage.setItem('key', value).then(()=>setRoomKey(value))
       } catch (e) {
         // saving error
@@ -67,9 +83,9 @@ export default function App() {
     }
   return (
     <View style={styles.container}>
-      {!connection && <LandingScreen/>}
-      {connection && roomKey!="" && <MainScreen sock={socket} key={roomKey}/>}
-      {connection && roomKey=="" && <CreateJoinRoom sock={socket} setkey={setKey}/>}
+      {!connection ? <LandingScreen/>: connection && roomKey!=""? <MainScreen sock={socket} kia={roomKey}/>: <CreateJoinRoom sock={socket} setkey={setKey}/>}
+      {/* {connection && roomKey!="" && }
+      {connection && roomKey=="" && <CreateJoinRoom sock={socket} setkey={setKey}/>} */}
     </View>
   );
 }

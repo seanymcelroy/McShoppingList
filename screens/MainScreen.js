@@ -4,7 +4,7 @@ import SearchBar from '../components/SearchBar'
 import ShoppingList from '../components/ShoppingList'
 import {FontAwesome5, MaterialIcons} from '@expo/vector-icons'
 
-export default function MainScreen({sock}) {
+export default function MainScreen({sock, kia}) {
     
     const [searchTxt, setSearchTxt] =useState()
     const [items, setItems]= useState([])
@@ -99,6 +99,7 @@ export default function MainScreen({sock}) {
     }
     return (
         <View style={styles.container}>
+            <Text style={styles.keeCode}>Room key: {kia}</Text>
             <SearchBar style={styles.searchbahr} txt={searchTxt} setTxt={typing}/>       
             <TouchableOpacity style={styles.btn} onPress={addItem}>
                 <View >
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#f5f3ed',
       alignItems: 'center',
       width: '100%',
-      paddingTop: 60
+      paddingTop: 65
 
     },
     searchbahr:{
@@ -213,6 +214,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 30,
         elevation:20
+    },
+    keeCode:{
+        fontSize:20,
+        position: 'absolute',
+        marginTop: 25
     },
     btnText:{
         color: 'white',

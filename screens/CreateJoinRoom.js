@@ -8,17 +8,30 @@ export default function CreateJoinRoom({sock, setkey}) {
     const [validCode, setValidCode]=useState(false)
     useEffect(() => {
         // Filter data to show selected items
+        sock.emit('call_roomkeydb', 'blah')
         sock.on('isValidCode', text=>{
             console.log(text)
             setValidCode(text)       
         })
+
+        sock.on('gimme_key', key_code=>{
+            console.log(key_code)
+            setkey(key_code)
+        })
+
+        
         
     }, []);
 
     function typing(text){
+        
         text=text.toUpperCase();
         sock.emit('valid_key', text)
         setText(text)
+    }
+
+    function createNewRoom(){
+        sock.emit('generate_key', 'genkey')
     }
 
     return (
@@ -31,7 +44,7 @@ export default function CreateJoinRoom({sock, setkey}) {
                     <Text style={styles.btnText}>Join</Text>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.new_room_btn}>
+            <TouchableOpacity style={styles.new_room_btn} onPress={()=>createNewRoom()}>
                 <View >
                     <Text style={styles.btnText}>Start new room</Text>
                 </View>   
