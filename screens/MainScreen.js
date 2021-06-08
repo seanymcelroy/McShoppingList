@@ -10,6 +10,7 @@ export default function MainScreen({sock, kia}) {
     const [items, setItems]= useState([])
     const [showingItems, setShowingItems]= useState(items)
     const [deleteVisible, setDeleteVisible]=useState(false)
+    const [validItem, setValidItem]=useState(false)
 
 
 
@@ -96,12 +97,17 @@ export default function MainScreen({sock, kia}) {
     function typing(text){
         setSearchTxt(text)
         sock.emit('message', 'search '+text)
+        if (text.length>0 && items.find(item => item.name.toLowerCase()===text.toLowerCase())==undefined){
+            setValidItem(true)
+        }else{
+            setValidItem(false)
+        }
     }
     return (
         <View style={styles.container}>
             <Text style={styles.keeCode}>Room key: {kia}</Text>
             <SearchBar style={styles.searchbahr} txt={searchTxt} setTxt={typing}/>       
-            <TouchableOpacity style={styles.btn} onPress={addItem}>
+            <TouchableOpacity disabled={!validItem} style={validItem? styles.btn: styles.disbaledBTN} onPress={addItem}>
                 <View >
                     <Text style={styles.btnText}>Add</Text>
                 </View>
@@ -208,6 +214,16 @@ const styles = StyleSheet.create({
     btn:{
         margin: 20,
         backgroundColor: '#5bdb4d',
+        height: 60,
+        width: '30%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 30,
+        elevation:20
+    },
+    disbaledBTN:{
+        margin: 20,
+        backgroundColor: '#5f8267',
         height: 60,
         width: '30%',
         alignItems: 'center',
